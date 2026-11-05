@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from .models import Student
 from .forms import StudentForm
+=======
+from django.shortcuts import render, redirect
+from .models import Student
+>>>>>>> b3114560e65592d8b734db312cc8757bf09a4770
 
 
 def student_registration(request):
@@ -20,7 +25,11 @@ def student_registration(request):
             last_name=last_name,
             gender=gender,
             date_of_birth=date_of_birth,
+<<<<<<< HEAD
             contact_no=contact_no,
+=======
+            contact_no=contact_no
+>>>>>>> b3114560e65592d8b734db312cc8757bf09a4770
         )
         return redirect('registration_success')
 
@@ -29,6 +38,7 @@ def student_registration(request):
 
 def registration_success(request):
     return render(request, 'registration/success.html')
+<<<<<<< HEAD
 
 
 def student_list(request):
@@ -125,3 +135,5 @@ def student_delete(request, pk):
             'student': student,
         },
     )
+=======
+>>>>>>> b3114560e65592d8b734db312cc8757bf09a4770
