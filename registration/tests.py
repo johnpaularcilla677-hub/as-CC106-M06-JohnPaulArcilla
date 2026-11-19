@@ -102,6 +102,68 @@ class StaffAuthenticationTests(TestCase):
         response = self.client.get(reverse('staff_dashboard'))
         self.assertContains(response, 'Welcome, staff!')
 
+    def test_dashboard_shows_summary_and_all_students(self):
+        Student.objects.create(
+            student_id='S002',
+            first_name='Another',
+            last_name='Student',
+            gender='Female',
+            date_of_birth='2001-02-03',
+            contact_no='0987654321',
+        )
+        self.client.force_login(self.staff_user)
+
+        response = self.client.get(reverse('staff_dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['total_students'], 2)
+        self.assertEqual(response.context['male_students'], 1)
+        self.assertEqual(response.context['female_students'], 1)
+        self.assertEqual(response.context['male_percent'], 50)
+        self.assertEqual(response.context['female_percent'], 50)
+        self.assertContains(response, 'Student Gender Overview')
+        self.assertContains(response, 'Open Student Directory')
+
+    def test_dashboard_search_filters_student_report_but_not_totals(self):
+        Student.objects.create(
+            student_id='S002',
+            first_name='Jamie',
+            last_name='Example',
+            gender='Female',
+            date_of_birth='2001-02-03',
+            contact_no='0987654321',
+        )
+        self.client.force_login(self.staff_user)
+
+        for search_term in ('S001', 'Test', 'Student'):
+            with self.subTest(search_term=search_term):
+                response = self.client.get(
+                    reverse('staff_dashboard'),
+                    {'q': search_term},
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.context['total_students'], 2)
+                self.assertEqual(len(response.context['students']), 1)
+
+        response = self.client.get(
+            reverse('staff_dashboard'),
+            {'q': 'does-not-exist'},
+        )
+        self.assertEqual(response.context['total_students'], 2)
+        self.assertEqual(len(response.context['students']), 0)
+        self.assertContains(response, 'No student records found.')
+
+    def test_dashboard_percentages_are_zero_without_students(self):
+        Student.objects.all().delete()
+        self.client.force_login(self.staff_user)
+
+        response = self.client.get(reverse('staff_dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['total_students'], 0)
+        self.assertEqual(response.context['male_percent'], 0)
+        self.assertEqual(response.context['female_percent'], 0)
+
     def test_staff_login_returns_to_requested_registration_page(self):
         registration_url = reverse('student_registration')
         response = self.client.post(
