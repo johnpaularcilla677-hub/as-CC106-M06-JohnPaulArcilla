@@ -21,6 +21,8 @@ from django.urls import path, include
 from django.urls import include, path
 >>>>>>> b3114560e65592d8b734db312cc8757bf09a4770
 
+admin.site.login_template = 'login.html'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),

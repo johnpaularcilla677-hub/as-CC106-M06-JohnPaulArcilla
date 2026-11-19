@@ -20,11 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< HEAD
 SECRET_KEY = 'django-insecure-2ennwhx!j#zr(jv05b7wgkfio)@cz-jj$hc6llq_cfqpci8ogu'
-=======
-SECRET_KEY = 'django-insecure-+51y%4w!k&5_-ai^hye-x(k!rtrsk=-wrvq-hlsj25cxqffn_h'
->>>>>>> b3114560e65592d8b734db312cc8757bf09a4770
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -60,7 +56,7 @@ ROOT_URLCONF = 'student_registration.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,3 +127,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/registration/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'
